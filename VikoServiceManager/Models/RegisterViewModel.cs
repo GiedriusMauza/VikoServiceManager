@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace VikoServiceManager.Models
 {
     public class RegisterViewModel
     {
+        
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -24,8 +28,10 @@ namespace VikoServiceManager.Models
         [Required]
         public string Name { get; set; }
 
-        public IEnumerable<SelectListItem> RoleList { get; set; }
+        [Required]
         public string RoleSelected { get; set; }
+
+        public IEnumerable<SelectListItem>? RoleList { get; set; }
 
     }
 }

@@ -34,11 +34,12 @@ namespace VikoServiceManager.Controllers
         {
             if (!await _roleManager.RoleExistsAsync("Admin"))
             {
-                // create roles of type
+                // create roles of type if they dont exist
                 await _roleManager.CreateAsync(new IdentityRole("Admin"));
                 await _roleManager.CreateAsync(new IdentityRole("User"));
             }
 
+            // Create list for select element
             List<SelectListItem> listItems = new List<SelectListItem>();
             listItems.Add(new SelectListItem()
             {
@@ -66,6 +67,7 @@ namespace VikoServiceManager.Controllers
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
+
             // validates if all fields are filled
             if (ModelState.IsValid)
             {
@@ -90,6 +92,18 @@ namespace VikoServiceManager.Controllers
                 }
                 AddErrors(result);
             }
+
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            listItems.Add(new SelectListItem()
+            {
+                Value = "Admin",
+                Text = "Admin"
+            });
+            listItems.Add(new SelectListItem()
+            {
+                Value = "User",
+                Text = "User"
+            });
 
             return View(model);
         }

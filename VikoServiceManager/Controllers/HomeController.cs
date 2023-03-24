@@ -19,8 +19,13 @@ namespace VikoServiceManager.Controllers
             return View();
         }
 
-        [Authorize] // attribute that only allows authorized users to enter that page
+        [Authorize(Roles = "Admin")] // attribute that only allows authorized users to enter that page
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDenied()
         {
             return View();
         }
