@@ -10,6 +10,8 @@ namespace VikoServiceManager.Models
         [Required]
         public string Name { get; set; }
 
+        public DateTime DateCreated { get; set; }
+
         [NotMapped] // just for display, no pushing to DB
         public string? RoleId { get; set; }
 

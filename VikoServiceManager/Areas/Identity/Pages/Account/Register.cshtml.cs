@@ -113,7 +113,7 @@ namespace VikoServiceManager.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {UserName = Input.Email, Email = Input.Email, Name = Input.Name };
+                var user = new ApplicationUser {UserName = Input.Email, Email = Input.Email, Name = Input.Name, DateCreated = DateTime.Now };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

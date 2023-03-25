@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using VikoServiceManager.Authorize;
 
 namespace VikoServiceManager
 {
@@ -45,8 +46,11 @@ namespace VikoServiceManager
 
                 // funcion with complex rules
                 options.AddPolicy("AdminCreateEditDeleteAccessOrSuperAdmin", policy => policy.RequireAssertion(context => AuthorizeAdminWithClaimsOrSuperAdmin(context)));
-
+                // custom policy handler from Authorize/OnlySuperAdminChecker.cs
+                options.AddPolicy("OnlySuperAdminChecker", policy => policy.Requirements.Add(new OnlySuperAdminChecker()));
             });
+
+            builder.Services.AddScoped<INumberOfDaysForAccount, NumberOfDaysForAccount>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -82,7 +86,7 @@ namespace VikoServiceManager
             app.Run();
         }
 
-        // TODO should be moved to seprate class for all the access functions
+        // TODO: should be moved to seprate class for all the access functions
         private static bool AuthorizeAdminWithClaimsOrSuperAdmin(AuthorizationHandlerContext handlerContext)
         {
             return (
