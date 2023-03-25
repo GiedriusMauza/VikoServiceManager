@@ -1,4 +1,5 @@
 using IdentityManager.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace VikoServiceManager
                 options.UseSqlServer(connectionString));
 
             /*            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();*/
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 5;
@@ -25,11 +26,27 @@ namespace VikoServiceManager
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             });
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/AccessDenied");
-            });
+            // custom path if access is denied
+            /*            builder.Services.ConfigureApplicationCookie(options =>
+                        {
+                            options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/AccessDenied");
+                        });*/
 
+            // policy configuration
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("Admin").RequireRole("User"));
+                options.AddPolicy("AdminCreateAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True"));
+                options.AddPolicy("AdminCreateEditDeleteAccess", policy => policy.RequireRole("Admin")
+                    .RequireClaim("create", "True")
+                    .RequireClaim("edit", "True")
+                    .RequireClaim("delete", "True"));
+
+                // funcion with complex rules
+                options.AddPolicy("AdminCreateEditDeleteAccessOrSuperAdmin", policy => policy.RequireAssertion(context => AuthorizeAdminWithClaimsOrSuperAdmin(context)));
+
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -56,13 +73,23 @@ namespace VikoServiceManager
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}", 
+                pattern: "{controller=Home}/{action=Index}/{id?}",
                 app.MapRazorPages()); // enables razor scaffolding
 
 
 
 
             app.Run();
+        }
+
+        // TODO should be moved to seprate class for all the access functions
+        private static bool AuthorizeAdminWithClaimsOrSuperAdmin(AuthorizationHandlerContext handlerContext)
+        {
+            return (
+                handlerContext.User.IsInRole("Admin") && handlerContext.User.HasClaim(c => c.Type == "Create" && c.Value == "True")
+                    && handlerContext.User.HasClaim(c => c.Type == "Edit" && c.Value == "True")
+                    && handlerContext.User.HasClaim(c => c.Type == "Delete" && c.Value == "True")
+                ) || handlerContext.User.IsInRole("SuperAdmin");
         }
     }
 }

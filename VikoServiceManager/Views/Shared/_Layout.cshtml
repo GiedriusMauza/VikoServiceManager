@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - VikoServiceManager</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/css/bootstrap.min.css" integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/VikoServiceManager.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" crossorigin="anonymous" />
 </head>
@@ -24,14 +24,33 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-@*                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        @*                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                        </li>
+
+                        <li class="nav-item dropdown text-dark">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Access Checker
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AuthorizedAccess">Authorized Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAccess">User Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserOrAdminAccess">User OR Admin Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAndAdminAccess">User AND Admin Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminAccess">Admin Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateAccess">Admin - Create only Claim Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateEditDeleteAccess">Admin - Create,Edit & Delete Claim Access</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateEditDeleteAccessOrSuperAdmin">Admin - Create,Edit & Delete Claim Access || Super Admin</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="OnlyGiedrius">Only Giedrius</a>
+                                
+                            </div>
                         </li>
                     </ul>
                     <partial name="_LoginPartial"></partial>
@@ -52,7 +71,7 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/js/bootstrap.min.js" integrity="sha512-ewfXo9Gq53e1q1+WDTjaHAGZ8UvCWq0eXONhwDuIoaH8xz2r96uoAYaQCm1oQhnBfRXrvJztNXFsTloJfgbL5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
