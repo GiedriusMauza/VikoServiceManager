@@ -70,6 +70,7 @@ namespace VikoServiceManager.Controllers
             return View();
         }
 
+        [Authorize(Policy = "AdminWithMoreThanThousandDays")]
         // special case where user account needs to be older than 1000 days to see the page
         public IActionResult OnlyGiedrius()
         {

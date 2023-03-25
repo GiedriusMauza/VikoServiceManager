@@ -48,8 +48,10 @@ namespace VikoServiceManager
                 options.AddPolicy("AdminCreateEditDeleteAccessOrSuperAdmin", policy => policy.RequireAssertion(context => AuthorizeAdminWithClaimsOrSuperAdmin(context)));
                 // custom policy handler from Authorize/OnlySuperAdminChecker.cs
                 options.AddPolicy("OnlySuperAdminChecker", policy => policy.Requirements.Add(new OnlySuperAdminChecker()));
+                options.AddPolicy("AdminWithMoreThanThousandDays", policy => policy.Requirements.Add(new AdminWithMoreThanThousandDaysRequirement(1000)));
             });
 
+            builder.Services.AddScoped<IAuthorizationHandler, AdminWithThousandDaysHandler>();
             builder.Services.AddScoped<INumberOfDaysForAccount, NumberOfDaysForAccount>();
 
             // Add services to the container.
