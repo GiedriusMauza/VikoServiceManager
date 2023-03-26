@@ -20,6 +20,7 @@ namespace VikoServiceManager.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly ApplicationDbContext _db;
@@ -117,9 +118,6 @@ namespace VikoServiceManager.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    // custom claim
-
-
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

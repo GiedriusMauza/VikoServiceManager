@@ -20,7 +20,7 @@ namespace VikoServiceManager.Controllers
             return View();
         }
 
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         // user role
         public IActionResult UserAccess()
         {
