@@ -1,0 +1,53 @@
+﻿@model Service
+
+@{
+    var title = "Edit Price";
+}
+
+<form method="post">
+    @if (Model != null && !String.IsNullOrEmpty(Convert.ToString(Model.Id)))
+    {
+        title = "Edit Price";
+        <input asp-for="@Model.Id" hidden />
+    }
+
+    <div class="border p-3 bg-white">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">@title</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Id"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Id" readonly class="form-control"></input>
+                    </div>
+                </div>
+
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Price" class="form-control" autocomplete="off"></input>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row py-2">
+                    <div class="col-8 offset-6 row ">
+                        <div class="col-5 align-content-center">
+                            <input type="submit" class="btn btn-primary w-10" value="Update Price" />
+                            <a asp-action="Index" class="btn btn-success w-10">Back</a>
+                        <div class="col">
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

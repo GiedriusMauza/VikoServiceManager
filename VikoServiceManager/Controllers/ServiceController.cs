@@ -1,6 +1,9 @@
 ﻿using IdentityManager.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
 {
@@ -14,87 +17,49 @@ namespace VikoServiceManager.Controllers
             _db = db;
         }
 
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var services = _db.Service.ToList();
             return View(services);
         }
 
         [HttpGet]
-        public ActionResult Details(int id)
+        public IActionResult EditPrice(string id)
         {
-            if (String.IsNullOrEmpty(Convert.ToString(id)))
+            if (String.IsNullOrEmpty(id))
             {
                 return View();
             }
             else
             {
-                var objFromDb = _db.Service.FirstOrDefault(x => x.Id == id);
+                // update
+                var objFromDb = _db.Service.FirstOrDefault(x => x.Id.Equals(id));
                 return View(objFromDb);
             }
         }
 
-        // GET: ServiceController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
-        // POST: ServiceController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> EditPrice(Service serviceObj)
         {
-            try
+
+            // update
+            var objServiceFromDb = _db.Service.FirstOrDefault(u => u.Id == serviceObj.Id);
+            if (objServiceFromDb == null)
             {
+                TempData[SD.Error] = "Service not found!";
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            objServiceFromDb.Price = serviceObj.Price;
+            _db.SaveChanges();
+
+            TempData[SD.Success] = "Price updated successfully!";
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: ServiceController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: ServiceController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ServiceController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ServiceController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
