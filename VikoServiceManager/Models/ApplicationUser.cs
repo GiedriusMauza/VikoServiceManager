@@ -20,5 +20,8 @@ namespace VikoServiceManager.Models
 
         [NotMapped]
         public IEnumerable<SelectListItem>? RoleList { get; set; }
+
+        [NotMapped]
+        public string? ResidentGroupName { get; set; }
     }
 }
