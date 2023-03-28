@@ -41,7 +41,7 @@ namespace VikoServiceManager.Controllers
                 }
                 else
                 {
-                    user.ResidentGroupName = residentGroups.FirstOrDefault(u => u.Id == membership.Id).Name;
+                    user.ResidentGroupName = residentGroups.FirstOrDefault(u => u.Id == membership.ResidentGroup.Id).Name;
                 }
             }
             return View(userList);
