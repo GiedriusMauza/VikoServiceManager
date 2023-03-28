@@ -40,6 +40,7 @@ namespace VikoServiceManager.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPrice(Service serviceObj)
         {

@@ -36,6 +36,7 @@ namespace VikoServiceManager.Controllers
             {
                 // create roles of type if they dont exist
                 await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("Manager"));
                 await _roleManager.CreateAsync(new IdentityRole("User"));
             }
 
@@ -43,13 +44,18 @@ namespace VikoServiceManager.Controllers
             List<SelectListItem> listItems = new List<SelectListItem>();
             listItems.Add(new SelectListItem()
             {
-                Value = "Admin",
-                Text = "Admin"
+                Value = "Manager",
+                Text = "Manager"
             });
             listItems.Add(new SelectListItem()
             {
                 Value = "User",
                 Text = "User"
+            });
+            listItems.Add(new SelectListItem()
+            {
+                Value = "Admin",
+                Text = "Admin"
             });
 
             ViewData["ReturnUrl"] = returnurl;
@@ -82,12 +88,17 @@ namespace VikoServiceManager.Controllers
                         await _userManager.AddToRoleAsync(user, "Admin");
 
                     }
+                    else if (model.RoleSelected == "Manager")
+                    {
+                        await _userManager.AddToRoleAsync(user, "Manager");
+                    }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, "User");
                     }
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    /*                    await _signInManager.SignInAsync(user, isPersistent: false);*/
+                    /*User registerViewModel = new RegisterViewModel()*/
                     return LocalRedirect(returnurl);
                 }
                 AddErrors(result);

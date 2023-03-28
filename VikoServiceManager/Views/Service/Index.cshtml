@@ -38,13 +38,22 @@
                             @item.Price€
                         </td>
                         <th>
-                            <div class="text-center">
-                                <form asp-action="EditPrice" asp-route-id="@item.Id">
-                                    <a asp-action="EditPrice" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
-                                        Edit Price
-                                    </a>
-                                </form>
-                            </div>
+                            @if (ViewContext.HttpContext.User.IsInRole("Manager") || ViewContext.HttpContext.User.IsInRole("Admin"))
+                            {
+                                <div class="text-center">
+                                    <form asp-action="EditPrice" asp-route-id="@item.Id">
+                                        <a asp-action="EditPrice" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
+                                            Edit Price
+                                        </a>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                </div>
+                            }
+
                         </th>
                     </tr>
                 }
