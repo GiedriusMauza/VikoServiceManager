@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VikoServiceManager.Models
@@ -10,6 +11,7 @@ namespace VikoServiceManager.Models
         public string? City { get; set; }
         public string? Region { get; set; }
         public string? PostalCode { get; set; }
+        [DefaultValue(true)]
         public ResidentGroup? ResidentGroup { get; set; }
 
         [NotMapped]

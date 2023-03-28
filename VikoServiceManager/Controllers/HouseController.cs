@@ -27,13 +27,13 @@ namespace VikoServiceManager.Controllers
             var residentGroups = _db.ResidentGroup.ToList();
             foreach (var house in houseList)
             {
-                if (house == null)
+                if (house != null && house.ResidentGroup != null)
                 {
-                    house.ResidentGroupName = "None";
+                    house.ResidentGroupName = residentGroups.FirstOrDefault(u => u.Id == house.ResidentGroup.Id).Name;
                 }
                 else
                 {
-                    house.ResidentGroupName = residentGroups.FirstOrDefault(u => u.Id == house.ResidentGroup.Id).Name;
+                    house.ResidentGroupName = "None";
                 }
 
                 var service = houseServiceList.FirstOrDefault(u => u.House.Id.Equals(house.Id));
@@ -47,78 +47,86 @@ namespace VikoServiceManager.Controllers
                 }
             }
             return View(houseList);
-
-
         }
 
         [HttpGet]
-        public IActionResult Details()
+        public IActionResult Upsert(string houseId)
         {
-
-            return View();
-        }
-
-        // GET: HouseController/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: HouseController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            if (String.IsNullOrEmpty(houseId))
             {
                 return View();
             }
+            else
+            {
+                // update
+                var objFromDb = _db.House.FirstOrDefault(x => x.Id.Equals(houseId));
+                return View(objFromDb);
+            }
         }
 
-        // GET: HouseController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: HouseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Upsert(House houseObj)
         {
-            try
+
+            if (_db.House.Any(u => u.Id == houseObj.Id))
             {
+                //error
+                TempData[SD.Error] = "House already exists!";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            if (string.IsNullOrEmpty(Convert.ToString(houseObj.Id)) || houseObj.Id == 0)
             {
-                return View();
+                //create
+                _db.House.Add(new House() {
+                    Address = houseObj.Address,
+                    City = houseObj.City,
+                    Region = houseObj.Region,
+                    PostalCode = houseObj.PostalCode
+                });
+                _db.SaveChanges();
+                TempData[SD.Success] = "House Entry created successfully!";
             }
+            else
+            {
+/*                // update
+                var objRoleFromDb = _db.Roles.FirstOrDefault(u => u.Id == houseObj.Id);
+                if (objRoleFromDb == null)
+                {
+                    TempData[SD.Error] = "Role not found!";
+                    return RedirectToAction(nameof(Index));
+                }
+                objRoleFromDb.Name = houseObj.ServiceName;
+                objRoleFromDb.NormalizedName = houseObj.ServiceName.ToUpper();
+                var result = await _roleManager.UpdateAsync(objRoleFromDb);
+                TempData[SD.Success] = "Role updated successfully!";*/
+            }
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: HouseController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: HouseController/Delete/5
-        [HttpPost]
+/*        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int serviceId)
         {
-            try
+            var objFromDb = _db.Service.FirstOrDefault(u => u.Id == serviceId);
+            if (objFromDb == null)
             {
+                TempData[SD.Error] = "Service not found!";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+
+            var userGroupsForThisHouse = _db.HouseService.Where(u => u.Service.Id == serviceId).Count();
+            if (userGroupsForThisHouse > 0)
             {
-                return View();
+                TempData[SD.Error] = "Cannot delete this service, since there are house assigned for this service!";
+                return RedirectToAction(nameof(Index));
             }
-        }
+            _db.Service.Remove(objFromDb);
+            _db.SaveChanges();
+            TempData[SD.Success] = "Service deleted successfully!";
+
+            return RedirectToAction(nameof(Index));
+        }*/
+
     }
 }
