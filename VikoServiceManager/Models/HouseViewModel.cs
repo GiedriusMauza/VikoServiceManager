@@ -12,7 +12,7 @@ namespace VikoServiceManager.Models
         public string? Region { get; set; }
         public string? PostalCode { get; set; }
         [DefaultValue(true)]
-        public ResidentGroup? ResidentGroup { get; set; }
+        public ResidentGroupViewModel? ResidentGroup { get; set; }
         [NotMapped]
         public string? ResidentGroupName { get; set; }
         [NotMapped]

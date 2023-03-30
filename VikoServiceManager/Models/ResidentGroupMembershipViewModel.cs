@@ -1,10 +1,10 @@
 ﻿namespace VikoServiceManager.Models
 {
-    public class ResidentGroupMembership
+    public class ResidentGroupMembershipViewModel
     {
         public int Id { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
-        public ResidentGroup ResidentGroup { get; set; } 
+        public ResidentGroupViewModel ResidentGroup { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }

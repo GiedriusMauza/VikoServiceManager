@@ -26,13 +26,13 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <th>
+                    <td>
                         @item.Id
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         @item.Name
-                    </th>
-                    <th>                        
+                    </td>
+                    <td>
                         <div class="text-center">
                             <form asp-action="Delete" asp-route-id="@item.Id">
                             <a asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
@@ -44,7 +44,7 @@
                                 </button>
                             </form>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             }
         </table>

@@ -12,11 +12,11 @@ namespace IdentityManager.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<ResidentGroup> ResidentGroup { get; set; }
-        public DbSet<ResidentGroupMembership> ResidentGroupMembership { get; set; }
+        public DbSet<ResidentGroupViewModel> ResidentGroup { get; set; }
+        public DbSet<ResidentGroupMembershipViewModel> ResidentGroupMembership { get; set; }
         public DbSet<HouseViewModel> House { get; set; }
-        public DbSet<HouseService> HouseService { get; set; }
-        public DbSet<Service> Service { get; set; }
+        public DbSet<HouseServiceViewModel> HouseService { get; set; }
+        public DbSet<ServiceViewModel> Service { get; set; }
 
     }
 }

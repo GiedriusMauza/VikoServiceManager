@@ -1,4 +1,5 @@
 ﻿using IdentityManager.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         // dependency injection for DB and IdentityUser

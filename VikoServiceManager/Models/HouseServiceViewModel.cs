@@ -1,9 +1,9 @@
 ﻿namespace VikoServiceManager.Models
 {
-    public class HouseService
+    public class HouseServiceViewModel
     {
         public int Id { get; set; }
         public HouseViewModel House { get; set; }
-        public Service Service { get; set; }
+        public ServiceViewModel Service { get; set; }
     }
 }

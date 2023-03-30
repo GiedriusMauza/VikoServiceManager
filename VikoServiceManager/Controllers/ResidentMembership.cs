@@ -1,9 +1,11 @@
 ﻿using IdentityManager.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class ResidentMembership : Controller
     {
         private readonly ApplicationDbContext _db;

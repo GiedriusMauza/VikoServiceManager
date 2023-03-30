@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using IdentityManager.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +12,7 @@ using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class HouseController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -152,7 +154,7 @@ namespace VikoServiceManager.Controllers
                         {
                             _db.HouseService.Remove(houseService);
                         }
-                        _db.HouseService.Add(new HouseService()
+                        _db.HouseService.Add(new HouseServiceViewModel()
                         {
                             House = objHouseFromDb,
                             Service = objServiceFromDb

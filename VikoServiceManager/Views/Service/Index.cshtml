@@ -1,13 +1,16 @@
-﻿@model IEnumerable<Service>
+﻿@model IEnumerable<ServiceViewModel>
 
 <br />
 <div class="row">
     <div class="col-6">
         <h2 class="text-primary">Services List</h2>
     </div>
-    <div class="col-6">
-        <a asp-action="Upsert" asp-asp-controller="Service" class="btn btn-primary float-end">Create New Service</a>
-    </div>
+    @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+    {
+        <div class="col-6">
+            <a asp-action="Upsert" asp-asp-controller="Service" class="btn btn-primary float-end">Create New Service</a>
+        </div>
+    }
     <div class="p-4 border rounded">
         @if (Model.Any())
         {
@@ -21,6 +24,9 @@
                     </th>
                     <th>
                         Price
+                    </th>
+                    <th>
+                        Manager
                     </th>
                     <th>
                     </th>
@@ -37,11 +43,30 @@
                         <td>
                             @item.Price€
                         </td>
+                        <td>
+                            @item.ManagerName
+                        </td>
                         <th>
-                            @if (ViewContext.HttpContext.User.IsInRole("Manager") || ViewContext.HttpContext.User.IsInRole("Admin"))
+                            @if (ViewContext.HttpContext.User.IsInRole("Admin"))
                             {
                                 <div class="text-center">
                                     <form asp-action="Delete" asp-route-serviceId="@item.Id">
+                                        <a asp-action="EditPrice" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
+                                            Edit Price
+                                        </a>
+                                        <a asp-action="AssignManager" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
+                                            Assign Manager
+                                        </a>
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else if (ViewContext.HttpContext.User.IsInRole("Manager"))
+                            {
+                                <div class="text-center">
+                                    <form asp-action="EditPrice" asp-route-serviceId="@item.Id">
                                         <a asp-action="EditPrice" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
                                             Edit Price
                                         </a>

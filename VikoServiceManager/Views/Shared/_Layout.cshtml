@@ -24,45 +24,31 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @*                        <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ResidentGroup" asp-action="Index">Resident Groups</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="House" asp-action="Index">House List</a>
-                        </li>
+                        @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                            </li>
+                        }
+                        @if (ViewContext.HttpContext.User.IsInRole("Manager") || ViewContext.HttpContext.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ResidentGroup" asp-action="Index">Resident Groups</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="House" asp-action="Index">House List</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ResidentMembership" asp-action="Index">Resident Membership List</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">Services List</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ResidentMembership" asp-action="Index">Resident Membership List</a>
-                        </li>
-@*
-                        <li class="nav-item dropdown text-dark">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Access Checker
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AuthorizedAccess">Authorized Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAccess">User Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserOrAdminAccess">User OR Admin Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAndAdminAccess">User AND Admin Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminAccess">Admin Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateAccess">Admin - Create only Claim Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateEditDeleteAccess">Admin - Create,Edit & Delete Claim Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminCreateEditDeleteAccessOrSuperAdmin">Admin - Create,Edit & Delete Claim Access || Super Admin</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="OnlyGiedrius">Only Giedrius</a>
-                            </div>
-                        </li>*@
+
                     </ul>
                     <partial name="_LoginPartial"></partial>
                 </div>

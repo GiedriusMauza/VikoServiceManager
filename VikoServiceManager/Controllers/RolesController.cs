@@ -6,6 +6,7 @@ using System.Data;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class RolesController : Controller
     {
 

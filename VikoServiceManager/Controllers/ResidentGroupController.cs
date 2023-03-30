@@ -9,6 +9,7 @@ using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class ResidentGroupController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -56,7 +57,7 @@ namespace VikoServiceManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(ResidentGroup residentGroup)
+        public IActionResult Upsert(ResidentGroupViewModel residentGroup)
         {
 
             if (_db.Service.Any(u => u.ServiceName == residentGroup.Name))
@@ -68,7 +69,7 @@ namespace VikoServiceManager.Controllers
             if (string.IsNullOrEmpty(Convert.ToString(residentGroup.Id)) || residentGroup.Id == 0)
             {
                 //create
-                _db.ResidentGroup.Add(new ResidentGroup() { Name = residentGroup.Name, Description = residentGroup.Description });
+                _db.ResidentGroup.Add(new ResidentGroupViewModel() { Name = residentGroup.Name, Description = residentGroup.Description });
                 _db.SaveChanges();
                 TempData[SD.Success] = "Resident group created successfully!";
             }

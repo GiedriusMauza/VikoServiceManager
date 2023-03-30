@@ -3,24 +3,42 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
 {
+    [Authorize]
     public class ServiceController : Controller
     {
 
         private readonly ApplicationDbContext _db;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ServiceController(ApplicationDbContext db)
+        public ServiceController(ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
+            _roleManager = roleManager;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var services = _db.Service.ToList();
+            var applicationUser = _db.ApplicationUser.ToList();
+            foreach (var service in services)
+            {
+                if (applicationUser != null && service.ApplicationUser != null)
+                {
+                    service.ManagerName = applicationUser.FirstOrDefault(u => u.Id == service.ApplicationUser.Id).Name;
+                }
+                else
+                {
+                    service.ManagerName = "None";
+                }
+            }
+
+
             return View(services);
         }
 
@@ -43,7 +61,7 @@ namespace VikoServiceManager.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Manager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPrice(Service serviceObj)
+        public async Task<IActionResult> EditPrice(ServiceViewModel serviceObj)
         {
 
             // update
@@ -79,7 +97,7 @@ namespace VikoServiceManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Service serviceObj)
+        public IActionResult Upsert(ServiceViewModel serviceObj)
         {
 
             if (_db.Service.Any(u => u.ServiceName == serviceObj.ServiceName))
@@ -91,7 +109,7 @@ namespace VikoServiceManager.Controllers
             if (string.IsNullOrEmpty(Convert.ToString(serviceObj.Id)) || serviceObj.Id == 0)
             {
                 //create
-                _db.Service.Add(new Service() { ServiceName = serviceObj.ServiceName, Price = serviceObj.Price });
+                _db.Service.Add(new ServiceViewModel() { ServiceName = serviceObj.ServiceName, Price = serviceObj.Price });
                 _db.SaveChanges();
                 TempData[SD.Success] = "Service created successfully!";
             }
@@ -136,6 +154,73 @@ namespace VikoServiceManager.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AssignManager(string id)
+        {
+            // Create list for select element
+            var appUserFromDb = _db.ApplicationUser.ToList();
+            
+
+            List<SelectListItem> usersItems = new List<SelectListItem>();
+            foreach (var item in appUserFromDb)
+            {
+                var roleName = _db.UserRoles.FirstOrDefault(u => u.UserId == item.Id);
+
+                var rolesValues = _db.Roles.FirstOrDefault(u => u.Id == roleName.RoleId).Name;
+                if (rolesValues == "Manager")
+                {
+                    usersItems.Add(new SelectListItem()
+                    {
+                        Text = item.Name + ", " + item.Email,
+                        Value = item.Id
+                    });
+                }
+
+            }
+
+            ServiceViewModel serviceViewModel = new ServiceViewModel()
+            {
+                ManagerList = usersItems
+
+            };
+
+            if (String.IsNullOrEmpty(id))
+            {
+                return View();
+            }
+            else
+            {
+                // update
+                var objFromDb = _db.Service.FirstOrDefault(x => x.Id.ToString() == id);
+                objFromDb.ManagerList = serviceViewModel.ManagerList;
+                return View(objFromDb);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AssignManager(ServiceViewModel serviceObj)
+        {
+            // update
+            var objServiceFromDb = _db.Service.FirstOrDefault(u => u.Id == serviceObj.Id);
+            var objManagerFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == serviceObj.ManagerSelected);
+
+            if (objServiceFromDb == null)
+            {
+                TempData[SD.Error] = "Service not found!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            objServiceFromDb.ApplicationUser = objManagerFromDb;
+            _db.Service.Update(objServiceFromDb);
+            _db.SaveChanges();
+
+            TempData[SD.Success] = "Manager updated successfully!";
+
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

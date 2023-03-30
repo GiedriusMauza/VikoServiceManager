@@ -1,6 +1,6 @@
 ﻿namespace VikoServiceManager.Models
 {
-    public class ResidentGroup
+    public class ResidentGroupViewModel
     {
         public int Id { get; set; }
         public string? Name { get; set; }
