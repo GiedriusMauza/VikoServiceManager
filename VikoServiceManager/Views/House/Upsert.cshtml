@@ -1,14 +1,15 @@
-﻿@model House
+﻿@model HouseViewModel
 
 @{
     var title = "Create House Entry";
 }
 
 <form method="post">
-    <input asp-for="@Model.Id" hidden />
-    @if (Model != null && !String.IsNullOrEmpty(Convert.ToString(Model.Id)))
+
+    @if (Model != null && Model.Id != 0)
     {
         title = "Edit House Entry";
+        <input asp-for="@Model.Id" hidden />
     }
 
     <div class="border p-3 bg-white">
@@ -53,6 +54,32 @@
                         <input asp-for="PostalCode" class="form-control"></input>
                         <span asp-validation-for="PostalCode" class="text-danger"></span>
                     </div>
+
+
+
+
+
+                    <div class="col-4">
+                        <label asp-for="ResidentGroupSelected">Resident Group</label>
+                    </div>
+                        <div class="col-8">
+                            <select asp-for="ResidentGroupSelected" asp-items="@Model.ResidentGroupList" class="form-control">
+                                <option selected disabled >--Select Resident Group</option>
+                            </select>
+                        </div>
+
+                    <div class="col-4">
+                        <label asp-for="ServiceSelected">Service</label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="ServiceSelected" asp-items="@Model.ServiceSelectedList" class="form-control">
+                            <option selected disabled>--Select Service</option>
+                        </select>
+                    </div>
+
+
+
+
 
 
                     <div class="form-group row py-2">

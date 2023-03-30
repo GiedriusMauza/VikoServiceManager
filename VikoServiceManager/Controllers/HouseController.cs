@@ -1,6 +1,11 @@
-﻿using IdentityManager.Data;
+﻿using Azure.Core;
+using IdentityManager.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using VikoServiceManager.Models;
 
@@ -43,90 +48,143 @@ namespace VikoServiceManager.Controllers
                 }
                 else
                 {
-                    house.ServiceName = serviceList.FirstOrDefault(u => u.Id == service.Id).ServiceName;
+                    house.ServiceName = service.Service.ServiceName;
                 }
             }
             return View(houseList);
         }
 
         [HttpGet]
-        public IActionResult Upsert(string houseId)
+        public IActionResult Upsert(int houseId)
         {
-            if (String.IsNullOrEmpty(houseId))
+            // Create list for select element
+            var resGroupFromDb = _db.ResidentGroup.ToList();
+            var serviceFromDb = _db.Service.ToList();
+
+            List<SelectListItem> groupsItems = new List<SelectListItem>();
+            foreach (var item in resGroupFromDb)
             {
-                return View();
+                groupsItems.Add(new SelectListItem()
+                {
+                    Text = item.Name,
+                    Value = item.Id.ToString()
+                });
+            }
+
+            List<SelectListItem> servcieItems = new List<SelectListItem>();
+            foreach (var item in serviceFromDb)
+            {
+                servcieItems.Add(new SelectListItem()
+                {
+                    Text = item.ServiceName,
+                    Value = item.Id.ToString()
+                });
+            }
+
+            HouseViewModel houseViewModel = new HouseViewModel()
+            {
+                ResidentGroupList = groupsItems,
+                ServiceSelectedList = servcieItems
+
+            };
+
+            if (String.IsNullOrEmpty(Convert.ToString(houseId)) || houseId == 0)
+            {
+                return View(houseViewModel);
             }
             else
             {
-                // update
-                var objFromDb = _db.House.FirstOrDefault(x => x.Id.Equals(houseId));
+                // update               
+                var objFromDb = _db.House.FirstOrDefault(x => x.Id == houseId);
+                objFromDb.ResidentGroupList = houseViewModel.ResidentGroupList;
+                objFromDb.ServiceSelectedList = houseViewModel.ServiceSelectedList;
                 return View(objFromDb);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(House houseObj)
+        public IActionResult Upsert(HouseViewModel houseObj)
         {
-
-            if (_db.House.Any(u => u.Id == houseObj.Id))
+            if (ModelState.IsValid)
             {
-                //error
-                TempData[SD.Error] = "House already exists!";
+                if (string.IsNullOrEmpty(Convert.ToString(houseObj.Id)) || houseObj.Id == 0)
+                {
+                    //create
+                    var objGroupFromDb = _db.ResidentGroup.FirstOrDefault(u => u.Id.ToString() == houseObj.ResidentGroupSelected);
+                    _db.House.Add(new HouseViewModel()
+                    {
+                        Address = houseObj.Address,
+                        City = houseObj.City,
+                        Region = houseObj.Region,
+                        PostalCode = houseObj.PostalCode,
+                        ResidentGroup = objGroupFromDb,
+
+                    });
+                    _db.SaveChanges();
+                    TempData[SD.Success] = "House Entry created successfully!";
+                }
+                else
+                {
+
+
+                    // update
+                    var objHouseFromDb = _db.House.FirstOrDefault(u => u.Id == houseObj.Id);
+                    var objGroupFromDb = _db.ResidentGroup.FirstOrDefault(u => u.Id.ToString() == houseObj.ResidentGroupSelected);
+                    var objServiceFromDb = _db.Service.FirstOrDefault(u => u.Id.ToString() == houseObj.ServiceSelected);
+                    if (objHouseFromDb == null)
+                    {
+                        TempData[SD.Error] = "Role not found!";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    objHouseFromDb.Address = houseObj.Address;
+                    objHouseFromDb.City = houseObj.City;
+                    objHouseFromDb.Region = houseObj.Region;
+                    objHouseFromDb.PostalCode = houseObj.PostalCode;
+                    objHouseFromDb.ResidentGroup = objGroupFromDb;
+
+
+                    if (objServiceFromDb != null)
+                    {
+                        // delete servcie if it already exists
+                        var houseService = _db.HouseService.FirstOrDefault(u => u.House.Id == objHouseFromDb.Id); // association between house and service
+                        if (houseService != null)
+                        {
+                            _db.HouseService.Remove(houseService);
+                        }
+                        _db.HouseService.Add(new HouseService()
+                        {
+                            House = objHouseFromDb,
+                            Service = objServiceFromDb
+                        });
+                    }
+
+                    _db.House.Update(objHouseFromDb);
+                    _db.SaveChanges();
+
+                    TempData[SD.Success] = "House updated successfully!";
+                }
                 return RedirectToAction(nameof(Index));
             }
-            if (string.IsNullOrEmpty(Convert.ToString(houseObj.Id)) || houseObj.Id == 0)
-            {
-                //create
-                _db.House.Add(new House() {
-                    Address = houseObj.Address,
-                    City = houseObj.City,
-                    Region = houseObj.Region,
-                    PostalCode = houseObj.PostalCode
-                });
-                _db.SaveChanges();
-                TempData[SD.Success] = "House Entry created successfully!";
-            }
-            else
-            {
-/*                // update
-                var objRoleFromDb = _db.Roles.FirstOrDefault(u => u.Id == houseObj.Id);
-                if (objRoleFromDb == null)
-                {
-                    TempData[SD.Error] = "Role not found!";
-                    return RedirectToAction(nameof(Index));
-                }
-                objRoleFromDb.Name = houseObj.ServiceName;
-                objRoleFromDb.NormalizedName = houseObj.ServiceName.ToUpper();
-                var result = await _roleManager.UpdateAsync(objRoleFromDb);
-                TempData[SD.Success] = "Role updated successfully!";*/
-            }
-            return RedirectToAction(nameof(Index));
+            return View(houseObj);
         }
 
-/*        [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int serviceId)
+        public IActionResult Delete(int houseId)
         {
-            var objFromDb = _db.Service.FirstOrDefault(u => u.Id == serviceId);
+            var objFromDb = _db.House.FirstOrDefault(u => u.Id == houseId);
             if (objFromDb == null)
             {
                 TempData[SD.Error] = "Service not found!";
                 return RedirectToAction(nameof(Index));
             }
-
-            var userGroupsForThisHouse = _db.HouseService.Where(u => u.Service.Id == serviceId).Count();
-            if (userGroupsForThisHouse > 0)
-            {
-                TempData[SD.Error] = "Cannot delete this service, since there are house assigned for this service!";
-                return RedirectToAction(nameof(Index));
-            }
-            _db.Service.Remove(objFromDb);
+            _db.House.Remove(objFromDb);
             _db.SaveChanges();
-            TempData[SD.Success] = "Service deleted successfully!";
+            TempData[SD.Success] = "House deleted successfully!";
 
             return RedirectToAction(nameof(Index));
-        }*/
+        }
 
     }
 }
