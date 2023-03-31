@@ -1,4 +1,7 @@
-﻿namespace VikoServiceManager.Models
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VikoServiceManager.Models
 {
     public class ResidentGroupMembershipViewModel
     {

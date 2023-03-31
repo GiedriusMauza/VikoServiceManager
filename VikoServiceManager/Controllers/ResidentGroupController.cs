@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 using VikoServiceManager.Models;
 
 namespace VikoServiceManager.Controllers
@@ -21,8 +22,31 @@ namespace VikoServiceManager.Controllers
         // GET: ResidentGroupController
         public IActionResult Index()
         {
-            var groups = _db.ResidentGroup.ToList();
-            return View(groups);
+            var groupsObj = _db.ResidentGroup.ToList();
+            var test = _db.HouseService.ToList();
+            foreach (var group in groupsObj)
+            {
+                var houseObj = _db.House.FirstOrDefault(u => u.ResidentGroup == group);
+                if (houseObj != null)
+                {
+                    var houseServiceObj = _db.HouseService.Where(u => u.House.Id == houseObj.Id).Select(i => i.Service);
+
+                    if (houseServiceObj != null)
+                    {
+                        group.ServicePrice = houseServiceObj.Select(u => u.Price).FirstOrDefault();
+                    }
+                    else
+                    {
+                        group.ServicePrice = 0;
+                    }
+                }
+                else
+                {
+                    group.ServicePrice = 0;
+                }
+
+            }
+            return View(groupsObj);
         }
 
         [HttpGet]

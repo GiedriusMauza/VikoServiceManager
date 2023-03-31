@@ -37,8 +37,6 @@ namespace VikoServiceManager.Controllers
                     service.ManagerName = "None";
                 }
             }
-
-
             return View(services);
         }
 
@@ -113,20 +111,20 @@ namespace VikoServiceManager.Controllers
                 _db.SaveChanges();
                 TempData[SD.Success] = "Service created successfully!";
             }
-/*            else
-            {
-                // update
-                var objRoleFromDb = _db.Roles.FirstOrDefault(u => u.Id == serviceObj.Id);
-                if (objRoleFromDb == null)
-                {
-                    TempData[SD.Error] = "Role not found!";
-                    return RedirectToAction(nameof(Index));
-                }
-                objRoleFromDb.Name = serviceObj.ServiceName;
-                objRoleFromDb.NormalizedName = serviceObj.ServiceName.ToUpper();
-                var result = await _roleManager.UpdateAsync(objRoleFromDb);
-                TempData[SD.Success] = "Role updated successfully!";
-            }*/
+            /*            else
+                        {
+                            // update
+                            var objRoleFromDb = _db.Roles.FirstOrDefault(u => u.Id == serviceObj.Id);
+                            if (objRoleFromDb == null)
+                            {
+                                TempData[SD.Error] = "Role not found!";
+                                return RedirectToAction(nameof(Index));
+                            }
+                            objRoleFromDb.Name = serviceObj.ServiceName;
+                            objRoleFromDb.NormalizedName = serviceObj.ServiceName.ToUpper();
+                            var result = await _roleManager.UpdateAsync(objRoleFromDb);
+                            TempData[SD.Success] = "Role updated successfully!";
+                        }*/
             return RedirectToAction(nameof(Index));
         }
 
@@ -160,7 +158,7 @@ namespace VikoServiceManager.Controllers
         {
             // Create list for select element
             var appUserFromDb = _db.ApplicationUser.ToList();
-            
+
 
             List<SelectListItem> usersItems = new List<SelectListItem>();
             foreach (var item in appUserFromDb)
