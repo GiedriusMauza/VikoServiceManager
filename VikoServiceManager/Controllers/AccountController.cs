@@ -36,7 +36,7 @@ namespace VikoServiceManager.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(string returnurl = null)
+        public IActionResult Register(string? returnurl = null)
         {
             // Create list for select element
             List<SelectListItem> listItems = new List<SelectListItem>();
@@ -57,7 +57,7 @@ namespace VikoServiceManager.Controllers
             });
 
             ViewData["ReturnUrl"] = returnurl;
-            RegisterViewModel registerViewModel = new RegisterViewModel()
+            RegisterViewModel registerViewModel = new()
             {
                 RoleList = listItems
             };
@@ -67,7 +67,7 @@ namespace VikoServiceManager.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnurl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, string? returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
@@ -119,7 +119,7 @@ namespace VikoServiceManager.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string returnurl = null)
+        public IActionResult Login(string? returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             return View();
@@ -128,7 +128,7 @@ namespace VikoServiceManager.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnurl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
@@ -171,7 +171,7 @@ namespace VikoServiceManager.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
         {
 
             return View(model);

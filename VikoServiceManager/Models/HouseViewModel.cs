@@ -1,15 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VikoServiceManager.Models
 {
     public class HouseViewModel
     {
+        [Required]
         public int Id { get; set; }
+        [Required]
         public string? Address { get; set; }
+        [Required]
         public string? City { get; set; }
+        [Required]
         public string? Region { get; set; }
+        [Required]
         public string? PostalCode { get; set; }
         [DefaultValue(true)]
         public ResidentGroupViewModel? ResidentGroup { get; set; }
