@@ -26,21 +26,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int id)
-        {
-            if (String.IsNullOrEmpty(Convert.ToString(id)))
-            {
-                return View();
-            }
-            else
-            {
-                // update
-                var objFromDb = _db.ResidentGroup.FirstOrDefault(x => x.Id == id);
-                return View(objFromDb);
-            }
-        }
-
-        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Upsert(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -56,6 +42,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ResidentGroupViewModel residentGroup)
         {
@@ -91,6 +78,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int userId)
         {

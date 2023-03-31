@@ -52,7 +52,7 @@ namespace VikoServiceManager.Controllers
             else
             {
                 // update
-                var objFromDb = _db.Service.FirstOrDefault(x => x.Id.Equals(id));
+                var objFromDb = _db.Service.FirstOrDefault(x => x.Id.ToString() == id);
                 return View(objFromDb);
             }
         }

@@ -21,7 +21,7 @@ namespace VikoServiceManager.Controllers
             _userManager = userManager;
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             var userList = _db.ApplicationUser.ToList();
@@ -43,6 +43,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId); // getting user object from database
@@ -70,6 +71,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ApplicationUser user)
         {
@@ -107,6 +109,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult LockUnlock(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -132,6 +135,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -147,6 +151,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageUserClaims(string userId)
         {
             IdentityUser user = await _userManager.FindByIdAsync(userId);
@@ -180,6 +185,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel userClaimsViewModel)
         {

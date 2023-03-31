@@ -172,6 +172,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int houseId)
         {

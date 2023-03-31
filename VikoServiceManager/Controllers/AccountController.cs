@@ -29,17 +29,10 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> Register(string returnurl = null)
         {
-            if (!await _roleManager.RoleExistsAsync("Admin"))
-            {
-                // create roles of type if they dont exist
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("Manager"));
-                await _roleManager.CreateAsync(new IdentityRole("User"));
-            }
-
             // Create list for select element
             List<SelectListItem> listItems = new List<SelectListItem>();
             listItems.Add(new SelectListItem()
@@ -67,7 +60,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnurl = null)
         {

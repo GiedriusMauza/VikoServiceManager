@@ -22,6 +22,7 @@ namespace VikoServiceManager.Controllers
             _roleManager = roleManager;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             var roles = _db.Roles.ToList();
@@ -29,6 +30,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Upsert(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -44,7 +46,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "OnlySuperAdminChecker")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(IdentityRole roleObj)
         {
@@ -78,7 +80,7 @@ namespace VikoServiceManager.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "OnlySuperAdminChecker")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
