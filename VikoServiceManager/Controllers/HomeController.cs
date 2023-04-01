@@ -28,6 +28,7 @@ namespace VikoServiceManager.Controllers
                 await _roleManager.CreateAsync(new IdentityRole("Manager"));
                 await _roleManager.CreateAsync(new IdentityRole("User"));
                 var user = new ApplicationUser { UserName = "admin@test.ff", Email = "admin@test.ff", Name = "Admin" };
+                await _userManager.AddToRoleAsync(user, "Admin");
                 await _userManager.CreateAsync(user, "Test1!");
             }
             return View();
