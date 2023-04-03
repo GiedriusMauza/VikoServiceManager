@@ -116,6 +116,7 @@ namespace VikoServiceManager.Areas.Identity.Pages.Account
                 var user = new ApplicationUser {UserName = Input.Email, Email = Input.Email, Name = Input.Name, DateCreated = DateTime.Now };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (result.Succeeded)
                 {
