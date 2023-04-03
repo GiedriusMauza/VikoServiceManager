@@ -45,10 +45,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="ResidentMembership" asp-action="Index">Resident Membership List</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">Services List</a>
-                        </li>
-
+                        @if (ViewContext.HttpContext.User.IsInRole("Manager") || ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("User"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">Services List</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial"></partial>
                 </div>
@@ -64,7 +66,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - VikoServiceManager by Giedrius Mauza 
+            &copy; 2023 - VikoServiceManager by Giedrius Mauza
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

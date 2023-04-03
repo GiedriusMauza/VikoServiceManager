@@ -21,7 +21,7 @@ namespace VikoServiceManager.Controllers
             _db = db;
             _roleManager = roleManager;
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, Manager,User")]
         public IActionResult Index()
         {
             var services = _db.Service.ToList();
